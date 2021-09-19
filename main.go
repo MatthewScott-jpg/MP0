@@ -12,6 +12,20 @@ import (
 var pings map[int]map[string]string
 var times map[int]string
 
+func UserInput() []string {
+	var webs string
+	fmt.Println("Input the urls that you would like to check, followed by spaces. To run the default hit enter.")
+	fmt.Scanln(&webs)
+	websArr := strings.Split(webs, " ")
+	if(websArr[0] == "") {
+		urls := []string{
+			"google.com", "bc.edu", "facebook.com", "instagram.com", "amazon.com",
+		}
+		return urls
+	}
+	return websArr
+}
+
 func PingHost(out chan string, used chan string, urls []string) {
 	urlsLength := len(urls)
 
@@ -33,9 +47,7 @@ func PingHost(out chan string, used chan string, urls []string) {
 func main() {
 	pings = make(map[int]map[string]string)
 	times = make(map[int]string)
-	urls := []string{
-		"google.com", "bc.edu", "facebook.com", "instagram.com", "amazon.com",
-	}
+	urls := UserInput()
 
 	for i := 1; i < 8; i++ {
 		runtime.GOMAXPROCS(i)
