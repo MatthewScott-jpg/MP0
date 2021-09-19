@@ -1,25 +1,29 @@
 package main
 
-//TODO: Add user input, store performance statistics in map, iterate through gomaxprocs possibilities
-
 import (
 	"fmt"
 	"os/exec"
+	"regexp"
 	"runtime"
+	"strings"
 	"time"
 )
 
-func PingHost(out chan string, urls []string) {
+var pings map[int]map[string]string
+var times map[int]string
+
+func PingHost(out chan string, used chan string, urls []string) {
 	urlsLength := len(urls)
 
-	fmt.Println("Running for loop...")
 	for i := 0; i < urlsLength; i++ {
 		go func(i int) {
 			n := urls[i]
 			cmd, ok := exec.Command("ping", "-c3", n).Output()
 			if ok != nil {
+				used <- n
 				out <- n + " not found"
 			} else {
+				used <- n
 				out <- string(cmd)
 			}
 		}(i)
@@ -27,47 +31,54 @@ func PingHost(out chan string, urls []string) {
 }
 
 func main() {
-	runtime.GOMAXPROCS(8)
+	pings = make(map[int]map[string]string)
+	times = make(map[int]string)
 	urls := []string{
-		"google.com",
-		"google.co.jp",
-		"google.co.uk",
-		"google.es",
-		"google.ca",
-		"google.de",
-		"google.it",
-		"google.fr",
-		"google.com.au",
-		"google.com.tw",
-		"google.nl",
-		"google.com.br",
-		"google.com.tr",
-		"google.be",
-		"google.com.gr",
-		"google.co.in",
-		"google.com.mx",
-		"google.dk",
-		"google.com.ar",
-		"google.ch",
-		"google.cl",
-		"google.at",
-		"google.co.kr",
-		"google.ie",
-		"google.com.co",
-		"google.pl",
-		"google.pt",
-		"google.com.pk",
+		"google.com", "bc.edu", "facebook.com", "instagram.com", "amazon.com",
 	}
 
-	out := make(chan string, len(urls))
-	start := time.Now()
+	for i := 1; i < 8; i++ {
+		runtime.GOMAXPROCS(i)
+		pings[i] = make(map[string]string)
+		out := make(chan string, len(urls))
+		used := make(chan string, len(urls))
+		start := time.Now()
+		PingHost(out, used, urls)
 
-	go PingHost(out, urls)
+		for range urls {
 
-	for range urls {
-		fmt.Println(<-out)
+			v := <-out
+			u := <-used
+
+			average := regexp.MustCompile("min/avg/max/stddev = ([0-9./]+)")
+			result := average.FindStringSubmatch(v)
+			if len(result) > 0 {
+				parts := strings.Split(result[1], "/")
+				pings[i][u] = parts[1]
+			} else {
+				pings[i][u] = "Failed"
+			}
+		}
+		duration := time.Since(start)
+		times[i] = fmt.Sprintf("%f", duration.Seconds())
+	}
+	for key := 1; key < 8; key++ {
+		element := times[key]
+		fmt.Println("For", key, "processes, it took ", element, "Seconds")
+		tmp := pings[key]
+		for subkey, subelem := range tmp {
+			fmt.Println("Average time for", subkey, "was", subelem, "ms")
+		}
+		fmt.Println("")
 	}
 
-	duration := time.Since(start)
-	fmt.Println("time", duration)
 }
+
+/*
+{
+		"google.com", "google.co.jp", "google.co.uk", "google.es", "google.ca", "google.de", "google.it", "google.fr",
+		"google.com.au", "google.com.tw", "google.nl", "google.com.br", "google.com.tr", "google.be", "google.com.gr",
+		"google.co.in", "google.com.mx", "google.dk", "google.com.ar", "google.ch", "google.cl", "google.at",
+		"google.co.kr", "google.ie", "google.com.co", "google.pl", "google.pt", "google.com.pk",
+	}
+*/
