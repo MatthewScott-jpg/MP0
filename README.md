@@ -14,11 +14,11 @@ The program gathers urls, then for values of GOMAXPROCS from 1-8, runs the PingH
 This function iterates over the list of urls and for each, starts a goroutine that pings the server 3 times and returns
 command line output through the out channel. We can verify this works in parallel by printing each value that comes through
 the channel in turn; the quickest through are printed first while slower ones are printed last, this being inconsistent with
-the order in which each goroutine is triggered. ![Verification](/Users/scott/Downloads/parallel verification.png)
+the order in which each goroutine is triggered. ![Verification](./Images/parallel verification.png)
 ## Sample Outputs
-![Sample Output](/Users/scott/Downloads/Sampleoutput.png)
+![Sample Output](./Images/Sampleoutput.png)
 ## Workflow
-![Workflow Diagram](/Users/scott/Downloads/MP0.png)
+![Workflow Diagram](./Images/MP0.png)
 
 ##References
 * Inspiration for running command line prompts in os/exec: https://play.golang.org/p/oCVwgamyNg
