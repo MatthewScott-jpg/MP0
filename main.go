@@ -20,7 +20,10 @@ func UserInput() []string {
 	websArr := strings.Split(webs, " ")
 	if websArr[0] == "" {
 		urls := []string{
-			"google.com", "bc.edu", "facebook.com", "instagram.com", "amazon.com",
+			"google.com", "google.co.jp", "google.co.uk", "google.es", "google.ca", "google.de", "google.it", "google.fr",
+			"google.com.au", "google.com.tw", "google.nl", "google.com.br", "google.com.tr", "google.be", "google.com.gr",
+			"google.co.in", "google.com.mx", "google.dk", "google.com.ar", "google.ch", "google.cl", "google.at",
+			"google.co.kr", "google.ie", "google.com.co", "google.pl", "google.pt", "google.com.pk",
 		}
 		return urls
 	}
@@ -84,6 +87,7 @@ func main() {
 		}
 		fmt.Println("")
 	}
+	fmt.Println(times)
 
 }
 
