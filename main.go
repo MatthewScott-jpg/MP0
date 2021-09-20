@@ -12,11 +12,16 @@ import (
 var pings map[int]map[string]string
 var times map[int]string
 
+
+/*
+UserInput Take input urls, to be used in Main(). If no input uses default URL's
+ */
 func UserInput() []string {
 	var webs string
 	fmt.Println("Input the urls that you would like to check, followed by spaces. To run the default hit enter.")
 	val, _ := fmt.Scanln(&webs)
 	fmt.Println(val, "inputs")
+	// Split string input into separate string links in an arr
 	websArr := strings.Split(webs, " ")
 	if websArr[0] == "" {
 		urls := []string{
@@ -30,6 +35,10 @@ func UserInput() []string {
 	return websArr
 }
 
+/*
+PingHost uses Go Routines in loop to Ping urls in parrallel. Each loop uses GO channels
+'Out' and 'Used' to store values from each ping
+ */
 func PingHost(out chan string, used chan string, urls []string) {
 	urlsLength := len(urls)
 
@@ -48,11 +57,15 @@ func PingHost(out chan string, used chan string, urls []string) {
 	}
 }
 
+/*
+main
+ */
 func main() {
 	pings = make(map[int]map[string]string)
 	times = make(map[int]string)
 	urls := UserInput()
 
+	//Run processes. Starting with 1 and ending at 7.
 	for i := 1; i < 8; i++ {
 		runtime.GOMAXPROCS(i)
 		pings[i] = make(map[string]string)
@@ -78,6 +91,7 @@ func main() {
 		duration := time.Since(start)
 		times[i] = fmt.Sprintf("%f", duration.Seconds())
 	}
+	//Formats value's stored in Ping and Time Maps
 	for key := 1; key < 8; key++ {
 		element := times[key]
 		fmt.Println("For", key, "processes, it took ", element, "Seconds")
