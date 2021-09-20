@@ -15,14 +15,8 @@ var times map[int]string
 func UserInput() []string {
 	var webs string
 	fmt.Println("Input the urls that you would like to check, followed by spaces. To run the default hit enter.")
-	_, err := fmt.Scanln(&webs)
-	if err != nil {
-		fmt.Println("Error in scanner")
-		urls := []string{
-			"google.com", "bc.edu", "facebook.com", "instagram.com", "amazon.com",
-		}
-		return urls
-	}
+	val, _ := fmt.Scanln(&webs)
+	fmt.Println(val, "inputs")
 	websArr := strings.Split(webs, " ")
 	if websArr[0] == "" {
 		urls := []string{
