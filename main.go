@@ -83,7 +83,7 @@ func main() {
 			average := regexp.MustCompile("min/avg/max/stddev = ([0-9./]+)")
 			result := average.FindStringSubmatch(v)
 			if len(result) > 0 {
-				//Splits up result into an splice, placing the average time for the ping in
+				//Splits up result into a splice, placing the average time for the ping in
 				//position 1 of the splice.
 				parts := strings.Split(result[1], "/")
 				//Takes the average value from parts[1] and puts it in the Pings Map for this specific
@@ -108,12 +108,3 @@ func main() {
 	}
 	fmt.Println(times)
 }
-
-/*
-{
-		"google.com", "google.co.jp", "google.co.uk", "google.es", "google.ca", "google.de", "google.it", "google.fr",
-		"google.com.au", "google.com.tw", "google.nl", "google.com.br", "google.com.tr", "google.be", "google.com.gr",
-		"google.co.in", "google.com.mx", "google.dk", "google.com.ar", "google.ch", "google.cl", "google.at",
-		"google.co.kr", "google.ie", "google.com.co", "google.pl", "google.pt", "google.com.pk",
-	}
-*/
