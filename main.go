@@ -12,10 +12,9 @@ import (
 var pings map[int]map[string]string
 var times map[int]string
 
-
 /*
 UserInput Take input urls, to be used in Main(). If no input uses default URL's
- */
+*/
 func UserInput() []string {
 	var webs string
 	fmt.Println("Input the urls that you would like to check, followed by spaces. To run the default hit enter.")
@@ -36,9 +35,9 @@ func UserInput() []string {
 }
 
 /*
-PingHost uses Go Routines in loop to Ping urls in parrallel. Each loop uses GO channels
+PingHost uses Go Routines in loop to Ping urls in parallel. Each loop uses GO channels
 'Out' and 'Used' to store values from each ping
- */
+*/
 func PingHost(out chan string, used chan string, urls []string) {
 	urlsLength := len(urls)
 
@@ -60,7 +59,7 @@ func PingHost(out chan string, used chan string, urls []string) {
 
 /*
 main Handles time of execution, and calls
- */
+*/
 func main() {
 	pings = make(map[int]map[string]string)
 	times = make(map[int]string)
@@ -108,7 +107,6 @@ func main() {
 		fmt.Println("")
 	}
 	fmt.Println(times)
-
 }
 
 /*
