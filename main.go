@@ -12,10 +12,9 @@ import (
 var pings map[int]map[string]string
 var times map[int]string
 
-
 /*
 UserInput Take input urls, to be used in Main(). If no input uses default URL's
- */
+*/
 func UserInput() []string {
 	var webs string
 	fmt.Println("Input the urls that you would like to check, followed by spaces. To run the default hit enter.")
@@ -36,9 +35,9 @@ func UserInput() []string {
 }
 
 /*
-PingHost uses Go Routines in loop to Ping urls in parrallel. Each loop uses GO channels
+PingHost uses Go Routines in loop to Ping urls in parallel. Each loop uses GO channels
 'Out' and 'Used' to store values from each ping
- */
+*/
 func PingHost(out chan string, used chan string, urls []string) {
 	urlsLength := len(urls)
 
@@ -60,7 +59,7 @@ func PingHost(out chan string, used chan string, urls []string) {
 
 /*
 main Handles time of execution, and calls
- */
+*/
 func main() {
 	pings = make(map[int]map[string]string)
 	times = make(map[int]string)
@@ -84,7 +83,7 @@ func main() {
 			average := regexp.MustCompile("min/avg/max/stddev = ([0-9./]+)")
 			result := average.FindStringSubmatch(v)
 			if len(result) > 0 {
-				//Splits up result into an splice, placing the average time for the ping in
+				//Splits up result into a splice, placing the average time for the ping in
 				//position 1 of the splice.
 				parts := strings.Split(result[1], "/")
 				//Takes the average value from parts[1] and puts it in the Pings Map for this specific
@@ -110,12 +109,3 @@ func main() {
 	fmt.Println(times)
 
 }
-
-/*
-{
-		"google.com", "google.co.jp", "google.co.uk", "google.es", "google.ca", "google.de", "google.it", "google.fr",
-		"google.com.au", "google.com.tw", "google.nl", "google.com.br", "google.com.tr", "google.be", "google.com.gr",
-		"google.co.in", "google.com.mx", "google.dk", "google.com.ar", "google.ch", "google.cl", "google.at",
-		"google.co.kr", "google.ie", "google.com.co", "google.pl", "google.pt", "google.com.pk",
-	}
-*/
