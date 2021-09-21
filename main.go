@@ -45,6 +45,7 @@ func PingHost(out chan string, used chan string, urls []string) {
 	for i := 0; i < urlsLength; i++ {
 		go func(i int) {
 			n := urls[i]
+			//Executes Ping with three threads ('c3'), error handles, and assigns output to out channel
 			cmd, ok := exec.Command("ping", "-c3", n).Output()
 			if ok != nil {
 				used <- n
@@ -58,7 +59,7 @@ func PingHost(out chan string, used chan string, urls []string) {
 }
 
 /*
-main
+main Handles time of execution, and calls
  */
 func main() {
 	pings = make(map[int]map[string]string)
@@ -79,10 +80,15 @@ func main() {
 			v := <-out
 			u := <-used
 
+			//Turns the cmd line results from Ping into strings in result.
 			average := regexp.MustCompile("min/avg/max/stddev = ([0-9./]+)")
 			result := average.FindStringSubmatch(v)
 			if len(result) > 0 {
+				//Splits up result into an splice, placing the average time for the ping in
+				//position 1 of the splice.
 				parts := strings.Split(result[1], "/")
+				//Takes the average value from parts[1] and puts it in the Pings Map for this specific
+				//process run i
 				pings[i][u] = parts[1]
 			} else {
 				pings[i][u] = "Failed"
