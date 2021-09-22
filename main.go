@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -41,11 +42,15 @@ PingHost uses Go Routines in loop to Ping urls in parallel. Each loop uses GO ch
 func PingHost(out chan string, used chan string, urls []string) {
 	urlsLength := len(urls)
 
+	var wg sync.WaitGroup
+
 	for i := 0; i < urlsLength; i++ {
+		wg.Add(1)
 		go func(i int) {
+			//defer wg.Done()
 			n := urls[i]
 			//Executes Ping with three threads ('c3'), error handles, and assigns output to out channel
-			cmd, ok := exec.Command("ping", "-c3", n).Output()
+			cmd, ok := exec.Command("ping", "-c5", n).Output()
 			if ok != nil {
 				used <- n
 				out <- n + " not found"
@@ -53,8 +58,10 @@ func PingHost(out chan string, used chan string, urls []string) {
 				used <- n
 				out <- string(cmd)
 			}
+			wg.Done()
 		}(i)
 	}
+	wg.Wait()
 }
 
 /*
